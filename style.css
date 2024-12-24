@@ -1,0 +1,49 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #EBF6FE;
+}
+
+.container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+    margin-top: 40px;
+    transform: translateX(50%) !important;
+    box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
+}
+
+.slideshow-container {
+    position: relative;
+    top: 50%;
+    left: 0;
+}
+
+.next {
+    position: absolute;
+    top: 50%;
+    right: 250px;
+    background-color: black;
+    padding: 15px 20px;
+    border-radius: 50%;
+    color: white;
+}
+
+.prev {
+    position: absolute;
+    top: 50%;
+    left: 250px;
+    background-color: black;
+    padding: 15px 20px;
+    border-radius: 50%;
+    color: white;
+}
