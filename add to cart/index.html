@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="remix/remixicon.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <div class="d-flex align-items-center justify-space-between">
+                <div class="logo">
+                    <a href="javascript:void(0)">
+                        <img src="images/logo-1.png" alt="logo" title="logo" width="150px">
+                    </a>
+                </div>
+                <nav>
+                    <ul class="d-flex">
+                        <li class="drop-down">
+                            <a href="javascript:void(0)">Home</a>
+                            <ul class="drop-downmenu">
+                                <li><a href="javascript:void(0)">Static Home</a></li>
+                                <li><a href="javascript:void(0)">Slider Home</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:void(0)">About</a></li>
+                        <li class="drop-down">
+                            <a href="javascript:void(0)">Pages</a>
+                            <ul class="drop-downmenu">
+                                <li><a href="javascript:void(0)">404 Page</a></li>
+                                <li><a href="javascript:void(0)">About</a></li>
+                                <li><a href="javascript:void(0)">Cart</a></li>
+                                <li><a href="javascript:void(0)">Chack Out</a></li>
+                                <li><a href="javascript:void(0)">Contact</a></li>
+                                <li><a href="javascript:void(0)">News</a></li>
+                                <li><a href="javascript:void(0)">Shop</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:void(0)">Contact</a></li>
+                        <li class="drop-down">
+                            <a href="javascript:void(0)">Shop</a>
+                            <ul class="drop-downmenu">
+                                <li><a href="javascript:void(0)">Shop</a></li>
+                                <li><a href="javascript:void(0)">Chack Out</a></li>
+                                <li><a href="javascript:void(0)">Single Product</a></li>
+                                <li><a href="javascript:void(0)">Cart</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="icon">
+                    <a href="cart.html" id="cart-icon"><i class="ri-shopping-cart-2-fill"></i></a>
+                    <span>0</span>
+                    <a href="javascript:void(0)"><i class="ri-search-line"></i></a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- product  -->
+        <section class="product">
+            <div class="container">
+                <div class="product-title">
+                    <h2><span>Our</span>Perfumes</h2>
+                </div>
+                <div class="row">
+                    <div class="w-3">
+                        <div class="product-box">
+                            <div class="product-img d-flex justify-content-center">
+                                <img src="images/perfumes-1.avif" alt="product-img-1" title="product-img-1"
+                                    width="100%">
+                            </div>
+                            <div class="product-contant text-center">
+                                <h3>LA-MONT</h3>
+                                <h2>185$</h2>
+                                <a href="javascript:void(0)" class="add-to-cart" data-product-name="Strawberry"
+                                    data-product-price="85" data-product-id="1">
+                                    <i class="ri-shopping-cart-2-fill"></i> Add to Cart
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-3">
+                        <div class="product-box">
+                            <div class="product-img d-flex justify-content-center">
+                                <img src="images/perfume-2.avif" alt="product-img-2" title="product-img-2"
+                                    width="80%">
+                            </div>
+                            <div class="product-contant text-center">
+                                <h3>ZARA</h3>
+                                <h2>270$</h2>
+                                <a href="javascript:void(0)" class="add-to-cart" data-product-name="Berry"
+                                    data-product-price="70" data-product-id="2">
+                                    <i class="ri-shopping-cart-2-fill"></i> Add to Cart
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-3">
+                        <div class="product-box">
+                            <div class="product-img d-flex justify-content-center">
+                                <img src="images/perfume-3.avif" alt="product-img-3" title="product-img-3"
+                                    width="90%">
+                            </div>
+                            <div class="product-contant text-center">
+                                <h3>ZUDIO</h3>
+                                <h2>350$</h2>
+                                <a href="javascript:void(0)" class="add-to-cart" data-product-name="Lemon"
+                                    data-product-price="35" data-product-id="3">
+                                    <i class="ri-shopping-cart-2-fill"></i> Add to Cart
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Load cart from localStorage on page load
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // Update cart count based on the cart array
+        function updateCartDisplay() {
+            const cartCount = document.querySelector('.icon span');
+            cartCount.textContent = cart.length; // Update cart item count
+            console.log(cartCount);
+        }
+
+        // Save cart to localStorage
+        function saveCartToLocalStorage() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        // Function to handle adding product to cart
+        function addToCart(event) {
+            const button = event.target.closest('a.add-to-cart');
+            if (!button) return;
+
+            const productName = button.getAttribute('data-product-name');
+            const productPrice = parseFloat(button.getAttribute('data-product-price'));
+            const productId = button.getAttribute('data-product-id');
+
+            // Check if the product is already in the cart
+            const productInCart = cart.find(item => item.id === productId);
+            if (productInCart) {
+                // Increase quantity of the existing product in the cart
+                productInCart.quantity += 1;
+            } else {
+                // Add new product to cart
+                cart.push({
+                    id: productId,
+                    name: productName,
+                    price: productPrice,
+                    quantity: 1
+                });
+            }
+
+            // Save the updated cart to localStorage
+            saveCartToLocalStorage();
+
+            // Update the cart display
+            updateCartDisplay();
+        }
+
+        // Event listener for "Add to Cart" buttons
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', addToCart);
+        });
+
+        // Initially update cart display when page loads
+        updateCartDisplay();
+    </script>
+
+
+    </script>
+
+</body>
+
+</html>

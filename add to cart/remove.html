@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="remix/remixicon.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- <header>
+        <div class="container">
+            <div class="d-flex align-items-center justify-space-between">
+                <div class="logo">
+                    <a href="index.html">
+                        <img src="images/logo.png" alt="logo" title="logo" width="150px">
+                    </a>
+                </div>
+                <nav>
+                    <!-- Add navigation links as needed -->
+                <!-- </nav>
+            </div>
+        </div> -->
+    <!-- </header>  -->
+
+    <main>
+        <section class="cart">
+            <div class="container">
+                <div class="cart-title">
+                    <h2>Your Cart</h2>
+                    <p>Review your items before checkout</p>
+                </div>
+                <div class="cart-items">
+                    <!-- Cart Items Will Appear Here -->
+                </div>
+                <div class="cart-total">
+                    <h3>Total: $<span id="total-price">0</span></h3>
+                    <a href="checkout.html" class="btn">Proceed to Checkout</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Load cart from localStorage on page load
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // Update the cart view when the page loads
+        function updateCartDisplay() {
+            const cartItemsContainer = document.querySelector('.cart-items');
+            const totalPriceElement = document.getElementById('total-price');
+            cartItemsContainer.innerHTML = ''; // Clear the existing items
+
+            let totalPrice = 0;
+
+            cart.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.classList.add('cart-item');
+                itemDiv.innerHTML = `
+                    <div class="item-details">
+                        <h4>${item.name}</h4>
+                        <p>Price: $${item.price}</p>
+                        <p>Quantity: <input type="number" value="${item.quantity}" min="1" class="item-quantity" data-id="${item.id}" data-price="${item.price}"></p>
+                    </div>
+                    <button class="remove-item" data-id="${item.id}">Remove</button>
+                `;
+                cartItemsContainer.appendChild(itemDiv);
+                totalPrice += item.price * item.quantity;
+            });
+
+            totalPriceElement.textContent = totalPrice.toFixed(2); // Update total price
+        }
+
+        // Handle removing an item from the cart
+        function removeItem(event) {
+            const button = event.target;
+            if (!button.classList.contains('remove-item')) return;
+
+            const itemId = button.getAttribute('data-id');
+            cart = cart.filter(item => item.id !== itemId); // Remove the item from cart
+
+            // Save the updated cart to localStorage
+            localStorage.setItem('cart', JSON.stringify(cart));
+
+            // Re-render the cart display
+            updateCartDisplay();
+        }
+
+        // Handle updating the quantity of an item in the cart
+        function updateItemQuantity(event) {
+            const input = event.target;
+            if (!input.classList.contains('item-quantity')) return;
+
+            const itemId = input.getAttribute('data-id');
+            const newQuantity = parseInt(input.value);
+            const item = cart.find(item => item.id === itemId);
+
+            if (item) {
+                item.quantity = newQuantity; // Update the quantity
+                // Save the updated cart to localStorage
+                localStorage.setItem('cart', JSON.stringify(cart));
+
+                // Re-render the cart display
+                updateCartDisplay();
+            }
+        }
+
+        // Event listeners
+        document.querySelector('.cart-items').addEventListener('click', removeItem);
+        document.querySelector('.cart-items').addEventListener('input', updateItemQuantity);
+
+        // Initially update the cart display when the page loads
+        updateCartDisplay();
+    </script>
+</body>
+
+</html>
