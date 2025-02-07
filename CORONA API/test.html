@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COVID-19 Data Tracker</title>
+    <style>
+        /* Step 1: Apply a background color to the whole page */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+            background: linear-gradient(to right, #a8c0ff, #3f2b96); /* Gradient blue-purple */
+            color: white;
+        }
+
+        /* Step 2: Style the container box */
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.1); /* Semi-transparent white */
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+        }
+
+        /* Step 3: Style the input field and button */
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        input {
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background: #ff6b6b;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #d63447;
+        }
+
+        /* Step 4: Style the state cards container */
+        .state-cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        /* Step 5: Style each state card */
+        .state-card {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .state-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Step 6: Style the COVID details section */
+        #covidDetail {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #ffcc70;
+            text-align: left;
+            max-width: 400px;
+            margin: auto;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            border-left: 5px solid #ff5733;
+        }
+
+        #covidDetail h2 {
+            color: #d9534f;
+        }
+
+        #covidDetail p {
+            font-size: 16px;
+            margin: 5px 0;
+            color: #333;
+        }
+
+        /* Step 7: Responsive Design */
+        @media (max-width: 600px) {
+            .state-cards-container {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>COVID-19 Data Tracker</h2>
+        <input type="date" id="date">
+        <button onclick="fetchStates()">Fetch States</button>
+
+        <div class="state-cards-container" id="stateCardsContainer"></div>
+
+        <div id="covidDetail">
+            <h2 id="stateName"></h2>
+            <p id="confirmed"></p>
+            <p id="discharged"></p>
+            <p id="deaths"></p>
+        </div>
+    </div>
+
+    <script>
+        let selectedDate = "";
+        let availableStates = [];
+
+        // Step 8: Fetch state-wise COVID-19 data
+        function fetchStates() {
+            selectedDate = document.getElementById('date').value;
+            if (!selectedDate) {
+                alert("Please select a date.");
+                return;
+            }
+
+            console.log("Selected Date: ", selectedDate);
+
+            fetch('https://api.rootnet.in/covid19-in/stats/history')
+                .then(response => response.json())
+                .then(data => {
+                    console.log("API Response: ", data);
+
+                    // Find the entry for the selected date
+                    let historyData = data.data.find(entry => entry.day === selectedDate);
+                    if (!historyData) {
+                        alert("No data found for this date.");
+                        console.log("No data found for this date.");
+                        return;
+                    }
+
+                    availableStates = historyData.regional;
+
+                    // Populate state cards
+                    let stateCardsContainer = document.getElementById('stateCardsContainer');
+                    stateCardsContainer.innerHTML = ''; // Clear previous data
+
+                    availableStates.forEach(stateData => {
+                        let card = document.createElement('div');
+                        card.className = 'state-card';
+                        card.onclick = function () {
+                            displayCovidData(stateData);
+                        };
+
+                        console.log("State Data: ", stateData);
+
+                        let confirmed = stateData.totalConfirmed !== undefined ? stateData.totalConfirmed : 'Data not available';
+                        let discharged = stateData.discharged !== undefined ? stateData.discharged : 'Data not available';
+                        let deaths = stateData.deaths !== undefined ? stateData.deaths : 'Data not available';
+
+                        card.innerHTML = `
+                            <h3>${stateData.loc}</h3>
+                            <p><strong>Confirmed:</strong> ${confirmed}</p>
+                            <p><strong>Discharged:</strong> ${discharged}</p>
+                            <p><strong>Deaths:</strong> ${deaths}</p>
+                        `;
+
+                        stateCardsContainer.appendChild(card);
+                    });
+                })
+                .catch(error => {
+                    alert("Error fetching data: " + error);
+                    console.error("Error details:", error);
+                });
+        }
+
+        // Step 9: Display COVID-19 data for the selected state
+        function displayCovidData(data) {
+            let stateName = document.getElementById('stateName');
+            let confirmedDetail = document.getElementById('confirmed');
+            let dischargedDetail = document.getElementById('discharged');
+            let deathsDetail = document.getElementById('deaths');
+            let covidDetail = document.getElementById('covidDetail');
+
+            console.log("Clicked State Data: ", data);
+
+            let confirmed = data.totalConfirmed !== undefined ? data.totalConfirmed : 'Data not available';
+            let discharged = data.discharged !== undefined ? data.discharged : 'Data not available';
+            let deaths = data.deaths !== undefined ? data.deaths : 'Data not available';
+
+            stateName.textContent = `${data.loc} - ${selectedDate}`;
+            confirmedDetail.innerHTML = `<strong>Confirmed:</strong> ${confirmed}`;
+            dischargedDetail.innerHTML = `<strong>Discharged:</strong> ${discharged}`;
+            deathsDetail.innerHTML = `<strong>Deaths:</strong> ${deaths}`;
+
+            covidDetail.style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>

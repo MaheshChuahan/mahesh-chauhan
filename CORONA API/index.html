@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COVID-19 Data Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+
+    <div class="container">
+        <h2>COVID-19 Data Tracker</h2>
+        <input type="date" id="date">
+        <button onclick="fetchStates()">Fetch States</button>
+
+        <div class="state-cards-container" id="stateCardsContainer"></div>
+
+        <div id="covidDetail">
+            <h2 id="stateName"></h2>
+            <p id="confirmed"></p>
+            <p id="discharged"></p>
+            <p id="deaths"></p>
+        </div>
+    </div>
+
+    <script src="corona.js"></script>
+
+</body>
+</html>
